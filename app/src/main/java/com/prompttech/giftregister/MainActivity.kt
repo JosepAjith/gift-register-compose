@@ -13,94 +13,42 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.prompttech.giftregister.navigation.AppNavGraph
+import com.prompttech.giftregister.navigation.Root
+import com.prompttech.giftregister.navigation.Route
 import com.prompttech.giftregister.ui.theme.GiftRegisterTheme
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 
 class MainActivity : ComponentActivity() {
+    lateinit var navController: NavHostController
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContent {
             GiftRegisterTheme {
-//                Scaffold(
-//                    modifier = Modifier.fillMaxSize()
-//                ) { innerPadding ->
-//                    Greeting(
-//                        name = "Android",
-//                        modifier = Modifier
-//                            .padding(innerPadding)
-//                            .padding(16.dp)
-//                    )
-//                }
                 SetupAppNavGraph()
             }
         }
     }
-}
 
-@Composable
-fun SetupAppNavGraph() {
-    val navController = rememberNavController() // This is a NavHostController
-
-    NavHost(
-        navController = navController,
-        startDestination = "SplashScreen"
-    ) {
-        composable("SplashScreen") {
-            SplashScreen(navController)
+    @Composable
+    fun SetupAppNavGraph() {
+        navController = rememberNavController() // This is a NavHostController
+        LaunchedEffect(Unit) {
+            delay(3000)
+            navController.navigate(Root.Auth.LOGIN)
         }
-        composable("WelcomeScreen") {
-            WelcomeScreen(navController)
-        }
-    }
-}
-
-@Composable
-fun SplashScreen(navController: NavController) {
-    Scaffold { innerPadding ->
-        Column {
-            Text(
-                text = "SplashScreen",
-                modifier = Modifier
-                    .padding(innerPadding)
-                    .padding(10.dp),
-                style = MaterialTheme.typography.headlineLarge
-            )
-            Button(onClick = { navController.navigate("WelcomeScreen") }) {
-                Text(text = "Go to WelcomeScreen")
-            }
-        }
-    }
-}
-
-@Composable
-fun WelcomeScreen(navController: NavController) {
-    Scaffold { innerPadding ->
-        Text(
-            text = "WelcomeScreen",
-            modifier = Modifier
-                .padding(innerPadding)
-                .padding(10.dp),
-            style = MaterialTheme.typography.headlineLarge
-        )
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Column(modifier = modifier) {
-        Text(text = "Hello $name!")
-        Spacer(modifier = Modifier.height(8.dp))
-        Button(onClick = {}) {
-            Text(text = "Submit")
-        }
+        AppNavGraph(navController = navController)
     }
 }
 
@@ -108,6 +56,5 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 @Composable
 fun GreetingPreview() {
     GiftRegisterTheme {
-        Greeting("Android")
     }
 }
